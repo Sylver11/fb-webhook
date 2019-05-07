@@ -23,7 +23,7 @@ app.post('/', (req, res) => {
 
       // Gets the body of the webhook event
       let webhook_event = entry.messaging[0];
-      console.log(entry);
+      console.log(body.entry);
       console.log(webhook_event);
 
 
