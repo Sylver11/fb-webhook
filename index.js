@@ -52,7 +52,7 @@ app.post('/', (req, res) => {
 });
 
 // Accepts GET requests at the /webhook endpoint
-app.get('/webhook', (req, res) => {
+app.get('/', (req, res) => {
 
   /** UPDATE YOUR VERIFY TOKEN **/
   const VERIFY_TOKEN = "justussylvestervoigt";
