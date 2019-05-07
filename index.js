@@ -11,7 +11,7 @@ const
 app.listen(process.env.PORT || 3000, () => console.log('webhook is listening at 3000 '));
 
 // Accepts POST requests at /webhook endpoint
-app.post('/webhook', (req, res) => {
+app.post('/', (req, res) => {
 
   // Parse the request body from the POST
   let body = req.body;
