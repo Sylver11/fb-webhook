@@ -1,24 +1,3 @@
-/**
- * Copyright 2017-present, Facebook, Inc. All rights reserved.
- *
- * This source code is licensed under the license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * Messenger Platform Quick Start Tutorial
- *
- * This is the completed code for the Messenger Platform quick start tutorial
- *
- * https://developers.facebook.com/docs/messenger-platform/getting-started/quick-start/
- *
- * To run this code, you must do the following:
- *
- * 1. Deploy this code to a server running Node.js
- * 2. Run `npm install`
- * 3. Update the VERIFY_TOKEN
- * 4. Add your PAGE_ACCESS_TOKEN to your environment vars
- *
- */
-
 'use strict';
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
 // Imports dependencies and set up http server
@@ -175,7 +154,7 @@ function callSendAPI(sender_psid, response) {
   request({
     "uri": "https://graph.facebook.com/v2.6/me/messages",
     "qs": {
-      "access_token": PAGE_ACCESS_TOKEN
+      "access_token": EAAH1p6oW6HQBAMZBPZBUMOA7ZC4dAmCzQKEbN6q9WApYoiBeziNRb9zulO5H55eaVzZAMlBzmn0MzIQ6HY8kmqXIRvZANEdKx0lesYYKhiOoik2ZBoiQjHhAJV0jZCryr7SFwOp7MUOp3PQFrvvQnVWNA3U2IIipxyL3UJRwzJwLjvaxySI4DOxI6wlZAnTgoboZD
     },
     "method": "POST",
     "json": request_body
