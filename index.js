@@ -1,5 +1,5 @@
 'use strict';
-const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
+const PAGE_ACCESS_TOKEN = process.env.VARNAME;
 // Imports dependencies and set up http server
 const
   request = require('request'),
@@ -9,6 +9,7 @@ const
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 3000, () => console.log('webhook is listening at 3000 '));
+// console.log(process.env.VARNAME);
 
 // Accepts POST requests at /webhook endpoint
 app.post('/', (req, res) => {
@@ -20,11 +21,11 @@ app.post('/', (req, res) => {
   if (body.object === 'page') {
 
     body.entry.forEach(function (entry) {
-      console.log(body);
+      // console.log(body);
       // Gets the body of the webhook event
-      // let webhook_event = entry.messeges[0];
-      let webhook_event = entry[0];
-      console.log(body.entry);
+      let webhook_event = entry.messaging[0];
+      // let webhook_event = entry[0];
+      // console.log(body.entry);
       console.log(webhook_event);
 
 
@@ -80,68 +81,148 @@ app.get('/', (req, res) => {
   }
 });
 
+
+// Handles messages events
+// function handleMessage(sender_psid, received_message) {
+
+// }
+
+// Handles messaging_postbacks events
+// function handlePostback(sender_psid, received_postback) {
+
+// }
+
+// Sends response messages via the Send API
+// function callSendAPI(sender_psid, response) {
+
+// }
+
+
+// var farmers = [{
+//   '0000': ["test"]
+// }];
+
+
+
+
+// console.log("trying");
+
+
 function handleMessage(sender_psid, received_message) {
   let response;
 
-  // Checks if the message contains text
   if (received_message.text) {
-    // Create the payload for a basic text message, which
-    // will be added to the body of our request to the Send API
-    response = {
-      "text": `You sent the message: "${received_message.text}". Now send me an attachment!`
+    switch (received_message.text.replace(/[^\w\s]/gi, '').trim().toLowerCase()) {
+      case "farmer":
+        response = openwebview(sender_psid);
+        console.log("farmer has been choosen");
+        break;
+      default:
+        response = {
+          "text": `You sent the message: "${received_message.text}".`
+        };
+        break;
     }
-  } else if (received_message.attachments) {
-    // Get the URL of the message attachment
-    let attachment_url = received_message.attachments[0].payload.url;
+  } else {
     response = {
-      "attachment": {
-        "type": "template",
-        "payload": {
-          "template_type": "generic",
-          "elements": [{
-            "title": "Is this the right picture?",
-            "subtitle": "Tap a button to answer.",
-            "image_url": attachment_url,
-            "buttons": [{
-                "type": "postback",
-                "title": "Yes!",
-                "payload": "yes",
-              },
-              {
-                "type": "postback",
-                "title": "No!",
-                "payload": "no",
-              }
-            ],
+      "text": `Sorry, I don't understand what you mean.`
+    }
+  }
+
+  // // Checks if the message contains text
+  // if (received_message.text == "farmer") {
+  //   // Create the payload for a basic text message, which
+  //   // will be added to the body of our request to the Send API
+  //   response = {
+  //     "text": 'Hi there, hope you doing well today! Please enter your PIN.'
+  //     // "text": `You sent the message: "${received_message.text}". Now send me an attachment!`
+  //   }
+  // }
+  // if (farmers.includes(received_message.text)) {
+  //   response = {
+  //     "text": 'Hi Test, hope you doing well! Please choose your available harvest.'
+
+  //   }
+  // }
+
+
+  // Define the template and webview
+  function openwebview(sender_psid) {
+    console.log("initiated the function");
+    let response = {
+      attachment: {
+        type: "template",
+        payload: {
+          template_type: "button",
+          text: "Hello Umthunzi Farmer! Please click the link below.",
+          buttons: [{
+            type: "web_url",
+            // url: SERVER_URL + "/options",
+            // url: process.env.SERVER_URL,
+            url: "https://umthunzi.justusvoigt.com",
+            title: "Open Veggi Mart",
+            webview_height_ratio: "full",
+            messenger_extensions: true
           }]
         }
       }
-    }
+    };
+    return response;
+
   }
+
+  // else if (received_message.attachments) {
+  //   // Get the URL of the message attachment
+  //   let attachment_url = received_message.attachments[0].payload.url;
+  //   response = {
+  //     "attachment": {
+  //       "type": "template",
+  //       "payload": {
+  //         "template_type": "generic",
+  //         "elements": [{
+  //           "title": "Is this the right picture?",
+  //           "subtitle": "Tap a button to answer.",
+  //           "image_url": attachment_url,
+  //           "buttons": [{
+  //               "type": "postback",
+  //               "title": "Yes!",
+  //               "payload": "yes",
+  //             },
+  //             {
+  //               "type": "postback",
+  //               "title": "No!",
+  //               "payload": "no",
+  //             }
+  //           ],
+  //         }]
+  //       }
+  //     }
+  //   }
+  // }
 
   // Send the response message
   callSendAPI(sender_psid, response);
 }
 
-function handlePostback(sender_psid, received_postback) {
-  console.log('ok')
-  let response;
-  // Get the payload for the postback
-  let payload = received_postback.payload;
+// function handlePostback(sender_psid, received_postback) {
+//   console.log('ok')
+//   let response;
+//   // Get the payload for the postback
+//   let payload = received_postback.payload;
 
-  // Set the response based on the postback payload
-  if (payload === 'yes') {
-    response = {
-      "text": "Thanks!"
-    }
-  } else if (payload === 'no') {
-    response = {
-      "text": "Oops, try sending another image."
-    }
-  }
-  // Send the message to acknowledge the postback
-  callSendAPI(sender_psid, response);
-}
+//   // Set the response based on the postback payload
+//   if (payload === 'yes') {
+//     response = {
+//       "text": "Thanks!"
+//     }
+//   } else if (payload === 'no') {
+//     response = {
+//       "text": "Oops, try sending another image."
+//     }
+//   }
+//   // Send the message to acknowledge the postback
+//   callSendAPI(sender_psid, response);
+// }
 
 function callSendAPI(sender_psid, response) {
   // Construct the message body
@@ -156,7 +237,8 @@ function callSendAPI(sender_psid, response) {
   request({
     "uri": "https://graph.facebook.com/v2.6/me/messages",
     "qs": {
-      "access_token": EAAH1p6oW6HQBANcw42SJdngFLwzZCRhFZAyckOZC7SJ6EYzd1muwTjXe4hyjNToZAtMNVQHs32nkgT3a3jopTPYDZBJTpZCw9M3AYboHEQVHaq4bCmlqWB3nnePLmZCtYbRErxZBkPuOEEurMMskOPzU0OV3aLjv0rvb7GPuwkTGuks5ZBwfURa9Se5R7NaSZCA5gZD
+      "access_token": PAGE_ACCESS_TOKEN
+
     },
     "method": "POST",
     "json": request_body
